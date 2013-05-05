@@ -37,7 +37,7 @@ public class Mastermind {
 	
 	private static char[] chrAnswer = { ' ', ' ', ' ', ' ' }; // Four character array that holds four colour letters ex. 'R', 'O', 'Y', 'G'
 	private static int[] intAnswer = { 0, 0, 0, 0 }; // Holds four integers that correspond to four colours ex. 1, 5, 0, 4
-	private static int[] intCurrentGuess = { 0, 0, 0, 0 }; // Will be checked against chrAnswer to determine a win.
+	private static int[] intCurrentGuess = { 0, 0, 0, 0 };
 	
 	private static int cC; // Correct colour, Correct pos
 	private static int cI; // Correct colour, Incorrect pos
@@ -59,32 +59,49 @@ public class Mastermind {
 	private static void startGameLoop() {
 		playerScore = 0;
 		
+		// Generate Answer
+		generateAnswer();
+		toChar(intAnswer);
+		System.out.println(chrAnswer); // ~~~~~~~~~~~~~TEMP~~~~~~~~~~~~~
+		
 		while (gameOver != true) {
 			round++;
+			System.out.println("Round: " + round);
 			
-			// Generate Answer
-			generateAnswer();
-			toChar(intAnswer);
-			System.out.println(chrAnswer); // ~~~~~~~~~~~~~TEMP~~~~~~~~~~~~~~~
+			// Get and check input
+			getInput();
 			
-			// Get input
-			System.out.println("Enter four different numbers between 1 and 8: ");
-			for (int i = 0; i < 4; i++) {
-				intCurrentGuess[i] = getInput();
-				if (!checkInput(i)) {
-					System.out.println("Please only enter numbers between 1 and 8.");
-				}
-			}
+			// Return feedback on guess
 			
-			if (round == MAX_ROUNDS) {
-				gameOver = true;
-			}
+			// Check for a win
+			checkWin();
+			
+			if (round == MAX_ROUNDS) gameOver = true;
 			
 		}
+		System.out.println("Rounds: " + round);
 		System.out.println("Your score: " + playerScore);
 	}
 	
-	private static int getInput() {
+	private static void getInput() {
+		System.out.println("Enter four different numbers between 1 and 8: ");
+		for (int i = 0; i < 4; i++) {
+			intCurrentGuess[i] = returnInput();
+			if (!isInputValid(i)) {
+				System.out.println("Invalid input. (Not in range)");
+				getInput(i); // Just get this number again
+				i--; // Re-iterate until we have valid input
+			} else {
+				System.out.println("Valid input.");
+			}
+		}
+	}
+	
+	private static void getInput(int i) { // For just getting one new number
+		System.out.println("Please re-enter guess number " + (i + 1));
+	}
+	
+	private static int returnInput() {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		try {
 			return Integer.parseInt(reader.readLine());
@@ -95,8 +112,8 @@ public class Mastermind {
 		}
 	}
 	
-	private static boolean checkInput(int i) {
-		return intCurrentGuess[i] < 8 || intCurrentGuess[i] > 1 ? true : false; // Guess must be between 1 and 8
+	private static boolean isInputValid(int i) {
+		return intCurrentGuess[i] <= 8 && intCurrentGuess[i] >= 1 ? true : false; // Guess must be between 1 and 8
 	}
 	
 	private static void generateAnswer() {
@@ -108,18 +125,10 @@ public class Mastermind {
 	
 	private static void checkAnswer() {
 		for (int i = 0; i < 4; i++) {
-			if (i != 0 && intAnswer[0] == intAnswer[i]) {
-				reGenerateAnswer(0); // If number 1 is equal to any other number chosen so far, regenerate.
-			}
-			if (i != 1 && intAnswer[1] == intAnswer[i]) {
-				reGenerateAnswer(1);
-			}
-			if (i != 2 && intAnswer[2] == intAnswer[i]) {
-				reGenerateAnswer(2);
-			}
-			if (i != 3 && intAnswer[3] == intAnswer[i]) {
-				reGenerateAnswer(3);
-			}
+			if (i != 0 && intAnswer[0] == intAnswer[i]) reGenerateAnswer(0);
+			if (i != 1 && intAnswer[1] == intAnswer[i]) reGenerateAnswer(1);
+			if (i != 2 && intAnswer[2] == intAnswer[i]) reGenerateAnswer(2);
+			if (i != 3 && intAnswer[3] == intAnswer[i]) reGenerateAnswer(3);
 		}
 	}
 	
@@ -154,37 +163,6 @@ public class Mastermind {
 				break;
 			case 8:
 				chrAnswer[i] = 'W';
-				break;
-			}
-		}
-	}
-	
-	private static void toInt(char[] chrAnswer) { // ~~~~~~~~~~~~~~~~~~~~~~~~~~Maybe temporary~~~~~~~~~~~
-		for (int i = 0; i < 4; i++) {
-			switch (chrAnswer[i]) {
-			case 'R':
-				intAnswer[i] = 1;
-				break;
-			case 'O':
-				intAnswer[i] = 2;
-				break;
-			case 'Y':
-				intAnswer[i] = 3;
-				break;
-			case 'G':
-				intAnswer[i] = 4;
-				break;
-			case 'V':
-				intAnswer[i] = 5;
-				break;
-			case 'P':
-				intAnswer[i] = 6;
-				break;
-			case 'B':
-				intAnswer[i] = 7;
-				break;
-			case 'W':
-				intAnswer[i] = 8;
 				break;
 			}
 		}
