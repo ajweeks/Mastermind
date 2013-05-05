@@ -6,7 +6,7 @@ public class Mastermind {
 	
 	/*
 	 * Mastermind is a code-breaking game where one player chooses four coloured pegs and the other player(s) must guess all four peg's colour and position in
-	 * 12 guesses or less. The person who chooses the colours must tell the guesser how many pegs they guessed correctly in both colour and position, and how
+	 * 10 guesses or less. The person who chooses the colours must tell the guesser how many pegs they guessed correctly in both colour and position, and how
 	 * many pegs were the correct colour, but in the wrong place.
 	 * 
 	 * For example:
@@ -28,9 +28,7 @@ public class Mastermind {
 	
 	private static final int VERSION = 1;
 	private static final String VERSION_STRING = "Mastermind version " + VERSION;
-	private static final int MAX_ROUNDS = 12;
-	
-	private static int round;
+	private static final int MAX_ROUNDS = 10;
 	
 	private static final char RED = 'R', ORANGE = 'O', YELLOW = 'Y', GREEN = 'G', VIOLET = 'V', PINK = 'P',
 			BLACK = 'B', WHITE = 'W';
@@ -57,6 +55,7 @@ public class Mastermind {
 	}
 	
 	private static void startGameLoop() {
+		int round = 0;
 		playerScore = 0;
 		
 		// Generate Answer
@@ -66,12 +65,13 @@ public class Mastermind {
 		
 		while (gameOver != true) {
 			round++;
-			System.out.println("Round: " + round);
+			System.out.println("Round: " + round); // ~~~~~~~~~~~~~TEMP~~~~~~~~~~~~~
 			
 			// Get and check input
 			getInput();
 			
 			// Return feedback on guess
+			getFeedback();
 			
 			// Check for a win
 			checkWin();
@@ -79,8 +79,28 @@ public class Mastermind {
 			if (round == MAX_ROUNDS) gameOver = true;
 			
 		}
-		System.out.println("Rounds: " + round);
-		System.out.println("Your score: " + playerScore);
+		System.out.println("GAME OVER");
+		System.out.println("It took you " + round + " round(s) to guess the number");
+		playerScore = calculateScore(round);
+		System.out.println("Your score: " + playerScore + "/100");
+	}
+	
+	private static void getFeedback() {
+		cC = cI = iI = 0;
+		// Check for right place + color
+		for (int i = 0; i < 4; i++) {
+			if (intCurrentGuess[i] == intAnswer[i]) {
+				cC += 1;
+			} else {
+				for (int j = 0; j < 4; j++) {
+					if (intCurrentGuess[i] == intAnswer[j]) { // Check all four against all four
+					
+					}
+				}
+			}
+		}
+		iI = 4 - (cC + cI); // incorrect is equal to 4 - correct
+		System.out.println("incorrect: " + iI + " correct colour: " + cI + " correct place: " + cC);
 	}
 	
 	private static void getInput() {
@@ -137,7 +157,7 @@ public class Mastermind {
 		checkAnswer();
 	}
 	
-	private static void toChar(int[] intAnswer) {
+	private static void toChar(int[] intAnswer) { // Converts intAnswer to chrAnswer
 		for (int i = 0; i < 4; i++) {
 			switch (intAnswer[i]) {
 			case 1:
@@ -168,10 +188,13 @@ public class Mastermind {
 		}
 	}
 	
+	private static int calculateScore(int round) {
+		return 110 - (round * 10);
+	}
+	
 	private static void checkWin() {
-		if (intAnswer == intCurrentGuess) {
-			gameOver = true;
-		}
+		if (intAnswer == intCurrentGuess) gameOver = true;
+		if (cC == 4) gameOver = true;
 	}
 	
 }
