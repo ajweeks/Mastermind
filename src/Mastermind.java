@@ -40,7 +40,7 @@ public class Mastermind {
 	private static int cC; // Correct colour, Correct pos
 	private static int cI; // Correct colour, Incorrect pos
 	private static int iI; // Incorrect colour
-	// cR + cW + wW should = 4
+	// cC + cI + iI should = 4
 	
 	private static boolean gameOver = false;
 	private static int playerScore;
@@ -65,7 +65,7 @@ public class Mastermind {
 		
 		while (gameOver != true) {
 			round++;
-			System.out.println("Round: " + round); // ~~~~~~~~~~~~~TEMP~~~~~~~~~~~~~
+			System.out.println("Round: " + round); // ~~~~~~~~~~~~~TEMP (MAYBE)~~~~~~~~~~~~~
 			
 			// Get and check input
 			getInput();
@@ -86,21 +86,18 @@ public class Mastermind {
 	}
 	
 	private static void getFeedback() {
-		cC = cI = iI = 0;
-		// Check for right place + color
 		for (int i = 0; i < 4; i++) {
 			if (intCurrentGuess[i] == intAnswer[i]) {
-				cC += 1;
+				cC++; // Correct place and colour
 			} else {
-				for (int j = 0; j < 4; j++) {
-					if (intCurrentGuess[i] == intAnswer[j]) { // Check all four against all four
-					
-					}
-				}
+				if (i != 0 && intCurrentGuess[0] == intAnswer[i]) cI++; // Correct colour, wrong place
+				if (i != 1 && intCurrentGuess[1] == intAnswer[i]) cI++; // Correct colour, wrong place
+				if (i != 2 && intCurrentGuess[2] == intAnswer[i]) cI++; // Correct colour, wrong place
+				if (i != 3 && intCurrentGuess[3] == intAnswer[i]) cI++; // Correct colour, wrong place
 			}
 		}
 		iI = 4 - (cC + cI); // incorrect is equal to 4 - correct
-		System.out.println("incorrect: " + iI + " correct colour: " + cI + " correct place: " + cC);
+		System.out.println("incorrect: " + iI + "\ncorrect colour: " + cI + "\ncorrect place: " + cC);
 	}
 	
 	private static void getInput() {
@@ -111,14 +108,12 @@ public class Mastermind {
 				System.out.println("Invalid input. (Not in range)");
 				getInput(i); // Just get this number again
 				i--; // Re-iterate until we have valid input
-			} else {
-				System.out.println("Valid input.");
 			}
 		}
 	}
 	
 	private static void getInput(int i) { // For just getting one new number
-		System.out.println("Please re-enter guess number " + (i + 1));
+		System.out.println("Please re-enter guess number " + (i + 1) + " ");
 	}
 	
 	private static int returnInput() {
