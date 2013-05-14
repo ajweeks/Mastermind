@@ -60,12 +60,12 @@ public class Mastermind {
 		
 		// Generate Answer
 		generateAnswer();
-		toChar(intAnswer);
-		System.out.println(chrAnswer); // ~~~~~~~~~~~~~TEMP~~~~~~~~~~~~~
+		toChar(intAnswer); // Keep a character copy of the answer
 		
 		while (gameOver != true) {
 			round++;
-			System.out.println("Round: " + round); // ~~~~~~~~~~~~~TEMP (MAYBE)~~~~~~~~~~~~~
+			System.out.println("Round: " + round);
+			if (round == 10) System.out.println("(Final Round!)");
 			
 			// Get and check input
 			getInput();
@@ -77,7 +77,15 @@ public class Mastermind {
 			checkWin();
 			
 			if (round == MAX_ROUNDS) gameOver = true;
-			
+		}
+		if (round == MAX_ROUNDS) {
+			System.out.print("Correct Answer was: ");
+			for (int i = 0; i < 4; i++)
+				System.out.print(chrAnswer[i] + " ");
+			System.out.print("( ");
+			for (int i = 0; i < 4; i++)
+				System.out.print(intAnswer[i] + " ");
+			System.out.println(" )");
 		}
 		System.out.println("GAME OVER");
 		System.out.println("It took you " + round + " round(s) to guess the number");
@@ -86,17 +94,18 @@ public class Mastermind {
 	}
 	
 	private static void getFeedback() {
+		cC = cI = iI = 0;
 		for (int i = 0; i < 4; i++) {
 			if (intCurrentGuess[i] == intAnswer[i]) {
-				cC++; // Correct place and colour
+				cC++; // Correct colour and pos
 			} else {
-				if (i != 0 && intCurrentGuess[0] == intAnswer[i]) cI++; // Correct colour, wrong place
-				if (i != 1 && intCurrentGuess[1] == intAnswer[i]) cI++; // Correct colour, wrong place
-				if (i != 2 && intCurrentGuess[2] == intAnswer[i]) cI++; // Correct colour, wrong place
-				if (i != 3 && intCurrentGuess[3] == intAnswer[i]) cI++; // Correct colour, wrong place
+				if (i != 0 && intCurrentGuess[0] == intAnswer[i]) cI++; // Correct colour, Incorrect pos
+				if (i != 1 && intCurrentGuess[1] == intAnswer[i]) cI++; // Correct colour, Incorrect pos
+				if (i != 2 && intCurrentGuess[2] == intAnswer[i]) cI++; // Correct colour, Incorrect pos
+				if (i != 3 && intCurrentGuess[3] == intAnswer[i]) cI++; // Correct colour, Incorrect pos
 			}
 		}
-		iI = 4 - (cC + cI); // incorrect is equal to 4 - correct
+		iI = 4 - (cC + cI);
 		System.out.println("incorrect: " + iI + "\ncorrect colour: " + cI + "\ncorrect place: " + cC);
 	}
 	
@@ -184,7 +193,10 @@ public class Mastermind {
 	}
 	
 	private static int calculateScore(int round) {
-		return 110 - (round * 10);
+		if (round == 10)
+			return 0;
+		else
+			return (110 - (round * 10));
 	}
 	
 	private static void checkWin() {
