@@ -1,3 +1,5 @@
+import gfx.Screen;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,7 +15,7 @@ public class Mastermind {
 	 * 
 	 * Four correct colours: (R) (O) (Y) (G)
 	 * 
-	 * My guess: (O) (B) (W) (G) I guessed one peg which is both the right colour and place, and one is the correct colour, but in the wrong place.
+	 * My guess: (O) (B) (W) (G) I guessed one peg which is both the right colour and place, and one which the correct colour, but in the wrong place.
 	 * 
 	 * In this version, the computer will always chose the four colours and the player will always be the "guesser".
 	 * 
@@ -30,9 +32,6 @@ public class Mastermind {
 	private static final String VERSION_STRING = "Mastermind version " + VERSION;
 	private static final int MAX_ROUNDS = 10;
 	
-	private static final char RED = 'R', ORANGE = 'O', YELLOW = 'Y', GREEN = 'G', VIOLET = 'V', PINK = 'P',
-			BLACK = 'B', WHITE = 'W';
-	
 	private static char[] chrAnswer = { ' ', ' ', ' ', ' ' }; // Four character array that holds four colour letters ex. 'R', 'O', 'Y', 'G'
 	private static int[] intAnswer = { 0, 0, 0, 0 }; // Holds four integers that correspond to four colours ex. 1, 5, 0, 4
 	private static int[] intCurrentGuess = { 0, 0, 0, 0 };
@@ -46,6 +45,9 @@ public class Mastermind {
 	private static int playerScore;
 	
 	public static void main(String[] args) {
+		
+		Screen screen = new Screen();
+		
 		System.out.println(VERSION_STRING);
 		try {
 			startGameLoop();
@@ -54,7 +56,7 @@ public class Mastermind {
 		}
 	}
 	
-	private static void startGameLoop() {
+	private static  void startGameLoop() {
 		int round = 0;
 		playerScore = 0;
 		
@@ -63,6 +65,9 @@ public class Mastermind {
 		toChar(intAnswer); // Keep a character copy of the answer
 		
 		while (gameOver != true) {
+			
+			Screen.render();
+			
 			round++;
 			System.out.println("Round: " + round);
 			if (round == 10) System.out.println("(Final Round!)");
@@ -193,8 +198,7 @@ public class Mastermind {
 	}
 	
 	private static int calculateScore(int round) {
-		if (round == 10)
-			return 0;
+		if (round == 10) return 0;
 		else
 			return (110 - (round * 10));
 	}
