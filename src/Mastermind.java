@@ -46,7 +46,7 @@ public class Mastermind {
 	
 	public static void main(String[] args) {
 		
-		Screen screen = new Screen();
+		new Screen();
 		
 		System.out.println(VERSION_STRING);
 		try {
